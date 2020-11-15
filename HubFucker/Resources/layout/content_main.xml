@@ -48,7 +48,7 @@
             />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:minWidth="25px"
             android:minHeight="25px">
@@ -65,13 +65,14 @@
                 android:layout_marginRight="0.0dp"
                 android:layout_marginBottom="0.0dp" />
             <Button
-                android:text="获取课表"
+                android:text="获取"
                 android:layout_width="59.0dp"
                 android:layout_height="49.0dp"
                 android:visibility="gone"
                 android:id="@+id/getButton" />
         </LinearLayout>
         <TextView
+            android:visibility="visible"
             android:text="我们保证，不会向华科以外的域名上传、保存您的任何个人数据。所有信息只需要一次拉取，之后即可以离线使用"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="match_parent"

@@ -21,6 +21,10 @@ using System.Text.Json;
 using Android.Support.V7.Widget;
 using Android.Bluetooth.LE;
 using Android.Gestures;
+using Xamarin.Essentials;
+using Android.Support.V4.App;
+using HubFucker.Resources.layout;
+using Android.Content;
 
 namespace HubFucker
 {
@@ -35,7 +39,7 @@ namespace HubFucker
         List<DailyLectures> lectures = new List<DailyLectures>();
         string dataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-            "hustcourses202011.json");
+            "hustcourses2020.1.json");
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
@@ -52,7 +56,7 @@ namespace HubFucker
             //fab.Click += FabOnClick;
 
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
-            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
+            Android.Support.V7.App.ActionBarDrawerToggle toggle = new Android.Support.V7.App.ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
             drawer.AddDrawerListener(toggle);
             toggle.SyncState();
             tx = FindViewById<TextView>(Resource.Id.textView4);
@@ -305,14 +309,16 @@ namespace HubFucker
                     }
                 }
             }
-            //else if (id == Resource.Id.nav_slideshow)
-            //{
-
-            //}
-            //else if (id == Resource.Id.nav_manage)
-            //{
-
-            //}
+            else if (id == Resource.Id.nav_slideshow)
+            {
+                Browser.OpenAsync("https://github.com/Chronostasys/HubFucker");
+            }
+            else if (id == Resource.Id.nav_manage)
+            {
+                var pay = new Intent(this, typeof(PayActivity));
+                StartActivity(pay);
+                
+            }
             //else if (id == Resource.Id.nav_share)
             //{
 
@@ -323,8 +329,8 @@ namespace HubFucker
             //}
 
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
-            drawer.CloseDrawer(GravityCompat.Start);
-            return true;
+            drawer?.CloseDrawer(GravityCompat.Start);
+            return false;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

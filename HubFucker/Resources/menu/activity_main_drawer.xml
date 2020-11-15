@@ -12,14 +12,14 @@
             android:id="@+id/nav_gallery"
             android:icon="@android:drawable/ic_media_next"
             android:title="Next Week" />
-        <!--<item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
         <item
             android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />-->
+            android:icon="@android:drawable/star_off"
+            android:title="Buy me a cup of tea" />
+        <item
+            android:id="@+id/nav_slideshow"
+            android:icon="@android:drawable/ic_menu_help"
+            android:title="About" />
     </group>
 
     <!--<item android:title="Communicate">
