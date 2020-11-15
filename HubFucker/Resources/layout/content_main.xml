@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:showIn="@layout/app_bar_main">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:id="@+id/linearLayout1">
+        <TextView
+            android:text="Login"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView3" />
+        <TextView
+            android:text="Student Id"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView2" />
+
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/stuId" />
+        <TextView
+            android:text="Password"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/textView1" />
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/passwd"
+            android:password="true"/>
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadProgress" 
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:minWidth="25px"
+            android:minHeight="25px">
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/code"
+                android:visibility="gone"/>
+            <com.felipecsl.gifimageview.library.GifImageView
+                android:id="@+id/myGIFImage"
+                android:scaleType="fitCenter"
+                android:layout_width="132.0dp"
+                android:layout_height="53.5dp"
+                android:layout_marginRight="0.0dp"
+                android:layout_marginBottom="0.0dp" />
+            <Button
+                android:text="获取课表"
+                android:layout_width="59.0dp"
+                android:layout_height="49.0dp"
+                android:visibility="gone"
+                android:id="@+id/getButton" />
+        </LinearLayout>
+        <TextView
+            android:text="我们保证，不会向华科以外的域名上传、保存您的任何个人数据。所有信息只需要一次拉取，之后即可以离线使用"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:id="@+id/linearLayout2">
+            <Button
+                android:id="@+id/button1"
+                android:text="prev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:text="Large Text"
+                android:textAlignment="center"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView4" />
+            <Button
+                android:id="@+id/button2"
+                android:text="next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:visibility="gone"
+            android:id="@+id/recyclerView"
+            android:scrollbars="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" >
+        </android.support.v7.widget.RecyclerView>
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/progressBar1" />
+        <TextView
+            android:text="Medium Text"
+            android:textAlignment="center"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            android:id="@+id/textView5" />
+    </LinearLayout>
+</RelativeLayout>
