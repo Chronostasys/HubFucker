@@ -290,6 +290,10 @@ namespace HubFucker
         }
         void ShowDailyCourse(bool init = false)
         {
+            if (navigationView.CheckedItem?.ItemId== Resource.Id.nav_share)
+            {
+                current = navigationView.CheckedItem;
+            }
             if (day!= DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear)
             {
                 //current?.SetChecked(false);
@@ -298,6 +302,7 @@ namespace HubFucker
             else
             {
                 current?.SetChecked(true);
+                
                 navigationView.SetCheckedItem(Resource.Id.nav_share);
             }
 
