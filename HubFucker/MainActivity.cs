@@ -261,6 +261,7 @@ namespace HubFucker
         {
             try
             {
+                CardViewHolder.dic.Clear();
                 day--;
                 mAdapter.lectures = lectures[day];
                 mAdapter.NotifyDataSetChanged();
@@ -276,6 +277,7 @@ namespace HubFucker
         {
             try
             {
+                CardViewHolder.dic.Clear();
                 day++;
                 mAdapter.lectures = lectures[day];
                 mAdapter.NotifyDataSetChanged();
@@ -296,6 +298,7 @@ namespace HubFucker
             {
                 try
                 {
+                    CardViewHolder.dic.Clear();
                     day = day - 7;
                     mAdapter.lectures = lectures[day];
                     mAdapter.NotifyDataSetChanged();
@@ -313,6 +316,7 @@ namespace HubFucker
                 {
                     try
                     {
+                        CardViewHolder.dic.Clear();
                         day = day + 7;
                         mAdapter.lectures = lectures[day];
                         mAdapter.NotifyDataSetChanged();

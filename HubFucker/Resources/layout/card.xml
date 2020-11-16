@@ -8,6 +8,7 @@
         android:layout_height="wrap_content"
         card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="true"
+        android:id="@+id/card"
         card_view:cardCornerRadius="5dp">
         <LinearLayout
             android:layout_width="match_parent"
