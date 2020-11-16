@@ -13,26 +13,26 @@
             android:icon="@android:drawable/ic_media_next"
             android:title="Next Week" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@android:drawable/star_off"
-            android:title="Buy me a cup of tea" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@android:drawable/ic_menu_help"
-            android:title="About" />
+            android:id="@+id/nav_share"
+            android:icon="@android:drawable/ic_menu_my_calendar"
+            android:title="今天" />
     </group>
 
-    <!--<item android:title="Communicate">
+    <item android:title="Sponsor">
         <menu>
             <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:id="@+id/nav_manage"
+                android:icon="@android:drawable/star_off"
+                android:title="Buy me a cup of tea" />
             <item
+                android:id="@+id/nav_slideshow"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="About" />
+            <!--<item
                 android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:icon="@drawable/ic_menu_share"
+                android:title="Send" />-->
         </menu>
-    </item>-->
+    </item>
 
 </menu>

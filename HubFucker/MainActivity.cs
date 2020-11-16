@@ -26,12 +26,14 @@ using Android.Support.V4.App;
 using HubFucker.Resources.layout;
 using Android.Content;
 using Jint.Parser.Ast;
+using Android.Support.V7.View.Menu;
 
 namespace HubFucker
 {
     [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
+        IMenuItem current;
         TextView progress;
         ProgressBar progressBar1;
         GifImageView myGIFImage;
@@ -47,6 +49,7 @@ namespace HubFucker
         public static int day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
         static event EventHandler<int> itemChanged;
         string[] days = new[] { "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        NavigationView navigationView;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -58,12 +61,13 @@ namespace HubFucker
             //FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
             //fab.Click += FabOnClick;
 
+
             DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             Android.Support.V7.App.ActionBarDrawerToggle toggle = new Android.Support.V7.App.ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
             drawer.AddDrawerListener(toggle);
             toggle.SyncState();
             tx = FindViewById<TextView>(Resource.Id.textView4);
-            NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
+            navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
             navigationView.SetNavigationItemSelectedListener(this);
             progress = FindViewById<TextView>(Resource.Id.textView5);
             progressBar1 = FindViewById<ProgressBar>(Resource.Id.progressBar1);
@@ -87,7 +91,7 @@ namespace HubFucker
             // Plug the adapter into the RecyclerView:
             mRecyclerView.SetAdapter(mAdapter);
             mRecyclerView.Visibility = ViewStates.Visible;
-            tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+            ShowDailyCourse(true);
             
             FindViewById<LinearLayout>(Resource.Id.linearLayout2).Visibility = ViewStates.Visible;
             FindViewById<Button>(Resource.Id.button1).Click += (o, e) => Prev();
@@ -262,11 +266,8 @@ namespace HubFucker
         {
             try
             {
-                CardViewHolder.dic.Clear();
                 day--;
-                mAdapter.lectures = lectures[day];
-                mAdapter.NotifyDataSetChanged();
-                tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+                ShowDailyCourse();
             }
             catch (Exception)
             {
@@ -278,11 +279,8 @@ namespace HubFucker
         {
             try
             {
-                CardViewHolder.dic.Clear();
                 day++;
-                mAdapter.lectures = lectures[day];
-                mAdapter.NotifyDataSetChanged();
-                tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+                ShowDailyCourse();
             }
             catch (Exception)
             {
@@ -290,20 +288,39 @@ namespace HubFucker
                 Toast.MakeText(this, "超出范围", ToastLength.Long).Show();
             }
         }
+        void ShowDailyCourse(bool init = false)
+        {
+            if (day!= DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear)
+            {
+                //current?.SetChecked(false);
+                navigationView.CheckedItem?.SetChecked(false);
+            }
+            else
+            {
+                current?.SetChecked(true);
+                navigationView.SetCheckedItem(Resource.Id.nav_share);
+            }
+
+            if (!init)
+            {
+                CardViewHolder.dic.Clear();
+                mAdapter.lectures = lectures[day];
+                mAdapter.NotifyDataSetChanged();
+            }
+            tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+        }
 
         public bool OnNavigationItemSelected(IMenuItem item)
         {
             int id = item.ItemId;
+            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
 
             if (id == Resource.Id.nav_camera)
             {
                 try
                 {
-                    CardViewHolder.dic.Clear();
                     day = day - 7;
-                    mAdapter.lectures = lectures[day];
-                    mAdapter.NotifyDataSetChanged();
-                    tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+                    ShowDailyCourse();
                 }
                 catch (Exception)
                 {
@@ -317,11 +334,8 @@ namespace HubFucker
                 {
                     try
                     {
-                        CardViewHolder.dic.Clear();
                         day = day + 7;
-                        mAdapter.lectures = lectures[day];
-                        mAdapter.NotifyDataSetChanged();
-                        tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
+                        ShowDailyCourse();
                     }
                     catch (Exception)
                     {
@@ -340,16 +354,19 @@ namespace HubFucker
                 StartActivity(pay);
                 
             }
-            //else if (id == Resource.Id.nav_share)
-            //{
-
-            //}
+            else if (id == Resource.Id.nav_share)
+            {
+                current = item;
+                day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
+                ShowDailyCourse();
+                drawer?.CloseDrawer(GravityCompat.Start);
+                return true;
+            }
             //else if (id == Resource.Id.nav_send)
             //{
 
             //}
 
-            DrawerLayout drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
             drawer?.CloseDrawer(GravityCompat.Start);
             return false;
         }
