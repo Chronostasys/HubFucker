@@ -19,18 +19,20 @@ namespace HubFucker
         public TextView Caption { get; private set; }
         public TextView Pos { get; private set; }
 
-        public CardViewHolder(View itemView) : base(itemView)
+        public CardViewHolder(View itemView, Action<int> listener) : base(itemView)
         {
             // Locate and cache view references:
             Teacher = itemView.FindViewById<TextView>(Resource.Id.textViewTeacher);
             Caption = itemView.FindViewById<TextView>(Resource.Id.textView);
             Pos = itemView.FindViewById<TextView>(Resource.Id.textViewPos);
+            itemView.Click += (o, e) => listener(base.LayoutPosition);
 
         }
     }
     public class LectureListAdapter : RecyclerView.Adapter
     {
         public DailyLectures lectures;
+        public event EventHandler<int> ItemClick;
 
         public LectureListAdapter(DailyLectures _lectures)
         {
@@ -56,7 +58,7 @@ namespace HubFucker
                         Inflate(Resource.Layout.card, parent, false);
 
             // Create a ViewHolder to hold view references inside the CardView:
-            CardViewHolder vh = new CardViewHolder(itemView);
+            CardViewHolder vh = new CardViewHolder(itemView, (e)=>ItemClick?.Invoke(this, e));
             return vh;
         }
     }

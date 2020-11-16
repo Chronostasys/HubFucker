@@ -25,6 +25,7 @@ using Xamarin.Essentials;
 using Android.Support.V4.App;
 using HubFucker.Resources.layout;
 using Android.Content;
+using Jint.Parser.Ast;
 
 namespace HubFucker
 {
@@ -36,14 +37,15 @@ namespace HubFucker
         GifImageView myGIFImage;
         HubCourseScheduleFucker.HubFucker hubfucker;
         TextView tx;
-        List<DailyLectures> lectures = new List<DailyLectures>();
-        string dataPath = Path.Combine(
+        public static List<DailyLectures> lectures = new List<DailyLectures>();
+        static string dataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Personal),
             "hustcourses2020.1.json");
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
-        int day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
+        public static int day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
+        static event EventHandler<int> itemChanged;
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -72,7 +74,6 @@ namespace HubFucker
             lectures = await System.Text.Json.JsonSerializer
                 .DeserializeAsync<List<DailyLectures>>(stream);
             await stream.DisposeAsync();
-            Toast.MakeText(this, "found", ToastLength.Long).Show();
             // Instantiate the adapter and pass in its data source:
             mAdapter = new LectureListAdapter(lectures[day]);
             // Get our RecyclerView layout:
@@ -86,12 +87,27 @@ namespace HubFucker
             mRecyclerView.SetAdapter(mAdapter);
             mRecyclerView.Visibility = ViewStates.Visible;
             tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+            
             FindViewById<LinearLayout>(Resource.Id.linearLayout2).Visibility = ViewStates.Visible;
             FindViewById<Button>(Resource.Id.button1).Click += (o, e) => Prev();
             FindViewById<Button>(Resource.Id.button2).Click += (o, e) => Next();
+            itemChanged += (o, e) => mAdapter.NotifyItemChanged(e);
+            mAdapter.ItemClick += MAdapter_ItemClick;
             return;
         }
+        public static void Update(int pos)
+        {
+            itemChanged.Invoke(null, pos);
+            var s = System.Text.Json.JsonSerializer.Serialize(lectures);
+            File.WriteAllTextAsync(dataPath, s);
+        }
 
+        private void MAdapter_ItemClick(object sender, int e)
+        {
+            var edit = new Intent(this, typeof(EditActivity));
+            edit.PutExtra("course", e);
+            StartActivity(edit);
+        }
 
         async ValueTask LoadAsync()
         {
@@ -170,7 +186,7 @@ namespace HubFucker
                         Toast.MakeText(this, "done", ToastLength.Long).Show();
                     });
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     RunOnUiThread(async () =>
                     {
@@ -337,6 +353,10 @@ namespace HubFucker
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
         }
     }
 }
