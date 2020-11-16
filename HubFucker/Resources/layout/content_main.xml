@@ -86,7 +86,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:visibility="gone"
             android:id="@+id/linearLayout2">
             <Button
                 android:id="@+id/button1"
@@ -97,12 +96,13 @@
                 android:text="Large Text"
                 android:textAlignment="center"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:layout_width="wrap_content"
+                android:layout_width="200dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/textView4" />
             <Button
                 android:id="@+id/button2"
                 android:text="next"
+                android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>

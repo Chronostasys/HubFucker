@@ -46,6 +46,7 @@ namespace HubFucker
         LectureListAdapter mAdapter;
         public static int day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
         static event EventHandler<int> itemChanged;
+        string[] days = new[] { "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -86,7 +87,7 @@ namespace HubFucker
             // Plug the adapter into the RecyclerView:
             mRecyclerView.SetAdapter(mAdapter);
             mRecyclerView.Visibility = ViewStates.Visible;
-            tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+            tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
             
             FindViewById<LinearLayout>(Resource.Id.linearLayout2).Visibility = ViewStates.Visible;
             FindViewById<Button>(Resource.Id.button1).Click += (o, e) => Prev();
@@ -165,7 +166,7 @@ namespace HubFucker
                             var lects = await hubfucker.GetDailyLectureAsync(i + 1, (DayOfWeek)(j % 7));
                             RunOnUiThread(() =>
                             {
-                                progress.Text = $"Fetching course data... {(i * 7 + j) / 1.4}%";
+                                progress.Text = $"Fetching course data... {(int)((i * 7 + j) / 1.4)}%";
                             });
                             lectures.Add(new DailyLectures
                             {
@@ -265,7 +266,7 @@ namespace HubFucker
                 day--;
                 mAdapter.lectures = lectures[day];
                 mAdapter.NotifyDataSetChanged();
-                tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+                tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
             }
             catch (Exception)
             {
@@ -281,7 +282,7 @@ namespace HubFucker
                 day++;
                 mAdapter.lectures = lectures[day];
                 mAdapter.NotifyDataSetChanged();
-                tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+                tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
             }
             catch (Exception)
             {
@@ -302,7 +303,7 @@ namespace HubFucker
                     day = day - 7;
                     mAdapter.lectures = lectures[day];
                     mAdapter.NotifyDataSetChanged();
-                    tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+                    tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
                 }
                 catch (Exception)
                 {
@@ -320,7 +321,7 @@ namespace HubFucker
                         day = day + 7;
                         mAdapter.lectures = lectures[day];
                         mAdapter.NotifyDataSetChanged();
-                        tx.Text = $"第{lectures[day].Week}周，{lectures[day].DayOfWeek}";
+                        tx.Text = $"第{lectures[day].Week}周，{days[(int)lectures[day].DayOfWeek]}";
                     }
                     catch (Exception)
                     {
