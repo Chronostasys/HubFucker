@@ -1,6 +1,6 @@
 # HubFucker
 开源华科课表软件（[Android下载](https://github.com/Chronostasys/HubFucker/releases/download/v1.0.0/hubfucker.app.apk))  
-<img src="screenshot.jpg" width="480">
+<img src="screenshot1.jpg" width="480">
 ## 功能
 纯净的课表  
 - 开源
