@@ -67,6 +67,7 @@ namespace HubCourseScheduleFucker
         public async ValueTask LoginAsync(string stuId, string passwd, string code)
         {
             var lt = document.GetElementById("lt") as IHtmlInputElement;
+
             var enc = eng.GetValue("strEnc");
             var des = enc.Invoke($"{stuId + passwd + lt.Value}", "1", "2", "3").AsString();
             var passurl = new Uri("https://pass.hust.edu.cn/");
