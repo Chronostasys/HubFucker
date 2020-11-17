@@ -363,7 +363,13 @@ namespace HubFucker
             {
                 current = item;
                 day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
-                ShowDailyCourse();
+                try
+                {
+                    ShowDailyCourse();
+                }
+                catch (Exception)
+                {
+                }
                 drawer?.CloseDrawer(GravityCompat.Start);
                 return true;
             }

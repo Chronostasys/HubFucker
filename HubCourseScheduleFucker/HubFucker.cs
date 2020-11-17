@@ -86,7 +86,7 @@ namespace HubCourseScheduleFucker
                 ul = stuId.Length,
                 pl = passwd.Length,
                 lt = lt.Value,
-                execution = "e1s1",
+                execution = (lt.NextElementSibling as IHtmlInputElement).Value,
                 _eventId = "submit"
             };
             newdoc = await form.SubmitAsync(o);
