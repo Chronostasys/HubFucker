@@ -37,7 +37,7 @@ namespace HubFucker
         TextView progress;
         ProgressBar progressBar1;
         GifImageView myGIFImage;
-        HubCourseScheduleFucker.HubFucker hubfucker;
+        IFucker fucker;
         TextView tx;
         public static List<DailyLectures> lectures = new List<DailyLectures>();
         static string dataPath = Path.Combine(
@@ -127,8 +127,8 @@ namespace HubFucker
             var progressBar = FindViewById<ProgressBar>(Resource.Id.loadProgress);
             progressBar.Visibility = ViewStates.Visible;
             var code = FindViewById<TextInputEditText>(Resource.Id.code);
-            hubfucker = new HubCourseScheduleFucker.HubFucker();
-            var s = await hubfucker.GetValidationCodeGifAsync();
+            fucker = new HubCourseScheduleFucker.HubFucker();
+            var s = await fucker.GetValidationCodeGifAsync();
 
             myGIFImage = FindViewById<GifImageView>(Resource.Id.myGIFImage);
             var buffer = new byte[s.Length];
@@ -156,7 +156,7 @@ namespace HubFucker
                     {
                         progress.Text = "Logging in...This may take 20s";
                     });
-                    await hubfucker.LoginAsync(FindViewById<TextInputEditText>(Resource.Id.stuId).Text,
+                    await fucker.LoginAsync(FindViewById<TextInputEditText>(Resource.Id.stuId).Text,
                         FindViewById<TextInputEditText>(Resource.Id.passwd).Text,
                         FindViewById<TextInputEditText>(Resource.Id.code).Text);
                     RunOnUiThread(() =>
@@ -167,7 +167,7 @@ namespace HubFucker
                     {
                         for (int j = 1; j < 8; j++)
                         {
-                            var lects = await hubfucker.GetDailyLectureAsync(i + 1, (DayOfWeek)(j % 7));
+                            var lects = await fucker.GetDailyLectureAsync(i + 1, (DayOfWeek)(j % 7));
                             RunOnUiThread(() =>
                             {
                                 progress.Text = $"Fetching course data... {(int)((i * 7 + j) / 1.4)}%";
@@ -207,7 +207,7 @@ namespace HubFucker
                         progressBar.Visibility = ViewStates.Visible;
                         var code = FindViewById<TextInputEditText>(Resource.Id.code);
                         code.Visibility = ViewStates.Gone;
-                        var s = await hubfucker.GetValidationCodeGifAsync();
+                        var s = await fucker.GetValidationCodeGifAsync();
 
                         myGIFImage = FindViewById<GifImageView>(Resource.Id.myGIFImage);
                         myGIFImage.StopAnimation();

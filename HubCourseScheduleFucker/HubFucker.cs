@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace HubCourseScheduleFucker
 {
-    public class HubFucker
+    public class HubFucker : IFucker
     {
         IBrowsingContext context;
         IDocument document;
@@ -26,17 +26,16 @@ namespace HubCourseScheduleFucker
         HttpClientHandler handler;
         MyRequester requester;
         IDocument newdoc;
-        public static HttpStatusCode httpStatus;
         public HubFucker()
         {
             var a = new DefaultHttpRequester();
-            handler = new HttpClientHandler { UseCookies = false};
+            handler = new HttpClientHandler { UseCookies = false };
             client = new HttpClient(handler);
             requester = new MyRequester();
             var config = Configuration.Default.WithRequester(requester)
-                .WithDefaultLoader(new LoaderOptions 
+                .WithDefaultLoader(new LoaderOptions
                 {
-                    IsResourceLoadingEnabled = true ,
+                    IsResourceLoadingEnabled = true,
                 })
                 .WithCookies().WithJs().WithEventLoop().WithMetaRefresh();
 
@@ -76,7 +75,7 @@ namespace HubCourseScheduleFucker
             p.Value = passwd;
             codeElement.Value = code;
             var lt = document.GetElementById("lt") as IHtmlInputElement;
-            var des = document.ExecuteScript($"strEnc('{stuId+passwd+lt.Value}' , '1' , '2' , '3')");
+            var des = document.ExecuteScript($"strEnc('{stuId + passwd + lt.Value}' , '1' , '2' , '3')");
             var desE = document.GetElementById("rsa") as IHtmlInputElement;
             desE.Value = des as string;
             var form = document.GetElementById("loginForm") as IHtmlFormElement;
@@ -92,7 +91,7 @@ namespace HubCourseScheduleFucker
             };
             newdoc = await form.SubmitAsync(o);
             await newdoc.WaitForReadyAsync();
-            
+
         }
         public async ValueTask<List<Lecture>> GetDailyLectureAsync(int week, DayOfWeek dayOfWeek)
         {
@@ -101,7 +100,7 @@ namespace HubCourseScheduleFucker
             time = time.AddDays(less);
             var timeSlug = time.ToString("yyyy-MM-dd");
             var req = $"http://hub.m.hust.edu.cn/kcb/todate/JsonCourse.action?sj={timeSlug}&zc={week}";
-            
+
             var message = new HttpRequestMessage(System.Net.Http.HttpMethod.Get, req);
             message.Headers.Add("Cookie", newdoc.Cookie);
             var result = await client.SendAsync(message);
