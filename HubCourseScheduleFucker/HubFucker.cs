@@ -41,6 +41,7 @@ namespace HubCourseScheduleFucker
         {
             var re = await client.GetAsync("https://pass.hust.edu.cn/cas/login?service=http%3A%2F%2Fhub.m.hust.edu.cn%2Fkcb%2Findex.jsp%3Fv%3D1");
             var html = await re.Content.ReadAsStringAsync();
+            //抓取加密脚本，放入js引擎
             var desjs = await client.GetAsync("https://pass.hust.edu.cn/cas/comm/js/des.js");
             eng = new Engine().Execute(await desjs.Content.ReadAsStringAsync());
 
@@ -49,8 +50,6 @@ namespace HubCourseScheduleFucker
                 try
                 {
                     document = await context.OpenAsync(ve => ve.Content(html));
-                    
-                    //document = await context.OpenAsync("http://hub.m.hust.edu.cn/kcb/index.jsp?v=1");
                 }
                 catch (Exception e)
                 {
@@ -59,6 +58,7 @@ namespace HubCourseScheduleFucker
                 }
                 first = false;
             }
+            //获取二维码
             var message = new HttpRequestMessage(System.Net.Http.HttpMethod.Get, "https://pass.hust.edu.cn/cas/code");
             var result = await client.SendAsync(message);
             result.EnsureSuccessStatusCode();
@@ -76,6 +76,8 @@ namespace HubCourseScheduleFucker
             handler.CookieContainer.SetCookies(passurl, nc);
             var u = "http://hub.m.hust.edu.cn/kcb/index.jsp?v=1";
             var url = new Url($"https://pass.hust.edu.cn/cas/login?service={HttpUtility.UrlEncode(u)}");
+
+            //application/x-www-form-urlencoded 需要用stringcontent设置
             var content = new StringContent($"code={code}&rsa={des}&ul={stuId.Length}&pl={passwd.Length}&lt={lt.Value}&execution=e1s1&_eventId=submit");
             content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
@@ -97,13 +99,14 @@ namespace HubCourseScheduleFucker
 
 
             var submitResult = await client.SendAsync(msg);
-            
+            //由于scheme从https变为http，需要手动重定向
             var fin = await client.GetAsync(submitResult.Headers.Location);
             fin.EnsureSuccessStatusCode();
 
         }
         public async ValueTask<List<Lecture>> GetDailyLectureAsync(int week, DayOfWeek dayOfWeek)
         {
+            //实际上hub只使用日期来获取星期几，所以time没必要是真实日期
             DateTime time = DateTime.Now;
             var less = dayOfWeek + 7 - time.DayOfWeek;
             time = time.AddDays(less);
