@@ -96,7 +96,7 @@ namespace HubFucker
                 return;
             }
             var re = await client.GetStreamAsync(
-                "https://raw.githubusercontent.com/Chronostasys/HubFucker/%40feature/autoupdate/HubFucker/Assets/version.json");
+                "https://raw.githubusercontent.com/Chronostasys/HubFucker/master/HubFucker/Assets/version.json");
             var remoteVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(re);
             var localVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(Assets.Open("version.json"));
             if (remoteVers[0].version == localVers[0].version)
