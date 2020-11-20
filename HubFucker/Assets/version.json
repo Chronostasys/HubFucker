@@ -1,0 +1,10 @@
+﻿[
+  {
+    "version": "2.0",
+    "apkUrl": "https://github.com/Chronostasys/HubFucker/releases/download/V2.0.0/hubfucker.app.apk",
+    "updates": [
+      "修复了release版本不可使用的问题，包体大小大幅度减少",
+      "优化请求方式，第一次请求的速度变快"
+    ]
+  }
+]
