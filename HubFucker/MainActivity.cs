@@ -29,6 +29,7 @@ using Jint.Parser.Ast;
 using Android.Support.V7.View.Menu;
 using Android.Content.PM;
 using System.Net.Http;
+using HubFucker.Model;
 
 namespace HubFucker
 {
@@ -47,7 +48,7 @@ namespace HubFucker
             "hustcourses2020.1.json");
         string apkPath => Path.Combine(
             GetExternalFilesDir(null).Path,
-            "e.apk");
+            "hubfucker.apk");
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
@@ -55,6 +56,11 @@ namespace HubFucker
         static event EventHandler<int> itemChanged;
         string[] days = new[] { "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         NavigationView navigationView;
+        HttpClient client = new HttpClient();
+        DateTime uncheckTime = DateTime.MinValue;
+        string uncheckSavePath = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.Personal),
+            "uncheckTime.txt");
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -81,59 +87,80 @@ namespace HubFucker
         }
         async ValueTask CheckUpdate()
         {
+            if (File.Exists(uncheckSavePath))
+            {
+                uncheckTime = DateTime.Parse(File.ReadAllText(uncheckSavePath));
+            }
+            if (uncheckTime.Year==DateTime.Now.Year&&(DateTime.Now.DayOfYear- uncheckTime.DayOfYear)<7)
+            {
+                return;
+            }
+            var re = await client.GetStreamAsync(
+                "https://raw.githubusercontent.com/Chronostasys/HubFucker/%40feature/autoupdate/HubFucker/Assets/version.json");
+            var remoteVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(re);
+            var localVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(Assets.Open("version.json"));
+            if (remoteVers[0].version == localVers[0].version)
+            {
+                return;
+            }
             var builder = new Android.Support.V7.App.AlertDialog.Builder(this);
-            var vername = PackageManager.GetPackageInfo(PackageName, 0).VersionName;
+            var msg = "更新版本的HubFucker已发布，你想现在安装它吗？\n";
+            for (int i = 0; i < remoteVers.Count-localVers.Count; i++)
+            {
+                var item = remoteVers[i];
+                msg += $"V{item.version}\n";
+                foreach (var update in item.updates)
+                {
+                    msg += $" -{update}\n";
+                }
+            }
             builder
-                .SetMessage("更新版本的HubFucker已发布，你想现在安装它吗？")
+                .SetMessage(msg)
                 .SetPositiveButton("是", (o,args)=> 
                 {
                     Toast.MakeText(this, "下载已在后台开始，会在完成时自动尝试安装", ToastLength.Long).Show();
-                    InstallAsync(); 
+                    InstallAsync(remoteVers[0].apkurl); 
                 })
                 .SetNegativeButton("否", (o, args) =>
                 {
                 })
                 .SetNeutralButton("最近不再提示", (o, args) =>
                 {
+                    uncheckTime = DateTime.Now;
+                    File.WriteAllTextAsync(uncheckSavePath, uncheckTime.ToString());
                 })
                 .Create()
                 .Show();
         }
-        async ValueTask InstallAsync()
+        async ValueTask InstallAsync(string src)
         {
             RequestPermissions(new[] { Manifest.Permission.InstallPackages, Manifest.Permission.ReadExternalStorage,
                 Manifest.Permission.WriteExternalStorage }, 1);
-            using (var client = new HttpClient())
+            try
             {
-                try
-                {
-                    if (!File.Exists(apkPath))
-                    {
-                        var s = await client.GetStreamAsync(
-                            "https://github.com/Chronostasys/HubFucker/releases/download/V2.0.0/hubfucker.app.apk");
-                        var fs = File.Create(apkPath);
-                        await s.CopyToAsync(fs);
-                        await fs.FlushAsync();
-                        await fs.DisposeAsync();
-                        await s.DisposeAsync();
-                    }
-                    Intent install = new Intent(Intent.ActionView);
-                    install.AddFlags(ActivityFlags.ClearTask);
-                    
-                    install.AddFlags(ActivityFlags.GrantReadUriPermission);
-                    var f = new Java.IO.File(apkPath);
-                    var uri = FileProvider.GetUriForFile(this,
-                        PackageName + ".provider", f);
-                    install.SetDataAndType(uri, "application/vnd.android.package-archive");
-                    StartActivity(install);
-                    return;
-                }
-                catch (Exception e)
-                {
-                    throw e;
-                }
-                
-                
+                var s = await client.GetStreamAsync(src);
+                var fs = File.Create(apkPath);
+                await s.CopyToAsync(fs);
+                await fs.FlushAsync();
+                await fs.DisposeAsync();
+                await s.DisposeAsync();
+                //if (!File.Exists(apkPath))
+                //{
+                //}
+                Intent install = new Intent(Intent.ActionView);
+                install.AddFlags(ActivityFlags.ClearTask);
+
+                install.AddFlags(ActivityFlags.GrantReadUriPermission);
+                var f = new Java.IO.File(apkPath);
+                var uri = FileProvider.GetUriForFile(this,
+                    PackageName + ".provider", f);
+                install.SetDataAndType(uri, "application/vnd.android.package-archive");
+                StartActivity(install);
+                return;
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
         async ValueTask LoadListAsync()
