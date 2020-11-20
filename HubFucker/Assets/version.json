@@ -1,7 +1,7 @@
 ﻿[
   {
     "version": "2.1",
-    "apkUrl": "https://github.com/Chronostasys/HubFucker/releases/download/V3.0.0/hubfucker.app.apk",
+    "apkUrl": "https://github.com/Chronostasys/HubFucker/releases/download/V2.1.0/hubfucker.app.apk",
     "updates": [
       "添加自动检查更新的功能"
     ]
