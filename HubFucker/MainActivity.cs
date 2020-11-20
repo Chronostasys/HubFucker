@@ -110,7 +110,7 @@ namespace HubFucker
                 var localVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(Assets.Open("version.json"));
                 if (remoteVers[0].version == localVers[0].version)
                 {
-                    Toast.MakeText(this, "已经是最新版", ToastLength.Long).Show();
+                    //Toast.MakeText(this, "已经是最新版", ToastLength.Long).Show();
                     return;
                 }
                 var builder = new Android.Support.V7.App.AlertDialog.Builder(this);
