@@ -14,7 +14,7 @@ namespace HubFucker.Model
     public class AppVer
     {
         public string version { get; set; }
-        public string apkurl { get; set; }
+        public string apkUrl { get; set; }
         public List<string> updates { get; set; }
     }
 }

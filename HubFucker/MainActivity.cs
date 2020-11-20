@@ -87,55 +87,69 @@ namespace HubFucker
         }
         async ValueTask CheckUpdate()
         {
-            if (File.Exists(uncheckSavePath))
+            try
             {
-                uncheckTime = DateTime.Parse(File.ReadAllText(uncheckSavePath));
-            }
-            if (uncheckTime.Year==DateTime.Now.Year&&(DateTime.Now.DayOfYear- uncheckTime.DayOfYear)<7)
-            {
-                return;
-            }
-            var re = await client.GetStreamAsync(
-                "https://raw.githubusercontent.com/Chronostasys/HubFucker/master/HubFucker/Assets/version.json");
-            var remoteVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(re);
-            var localVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(Assets.Open("version.json"));
-            if (remoteVers[0].version == localVers[0].version)
-            {
-                return;
-            }
-            var builder = new Android.Support.V7.App.AlertDialog.Builder(this);
-            var msg = "更新版本的HubFucker已发布，你想现在安装它吗？\n";
-            for (int i = 0; i < remoteVers.Count-localVers.Count; i++)
-            {
-                var item = remoteVers[i];
-                msg += $"V{item.version}\n";
-                foreach (var update in item.updates)
+                if (CheckSelfPermission(Manifest.Permission.ReadExternalStorage)!=Permission.Granted
+                    || CheckSelfPermission(Manifest.Permission.ReadExternalStorage) != Permission.Granted
+                    || CheckSelfPermission(Manifest.Permission.InstallPackages) != Permission.Granted)
                 {
-                    msg += $" -{update}\n";
+                    RequestPermissions(new[] { Manifest.Permission.InstallPackages, Manifest.Permission.ReadExternalStorage,
+                        Manifest.Permission.WriteExternalStorage }, 1);
                 }
+                if (File.Exists(uncheckSavePath))
+                {
+                    uncheckTime = DateTime.Parse(File.ReadAllText(uncheckSavePath));
+                }
+                if (uncheckTime.Year == DateTime.Now.Year && (DateTime.Now.DayOfYear - uncheckTime.DayOfYear) < 7)
+                {
+                    return;
+                }
+                var re = await client.GetStreamAsync(
+                    "https://raw.githubusercontent.com/Chronostasys/HubFucker/master/HubFucker/Assets/version.json");
+                var remoteVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(re);
+                var localVers = await System.Text.Json.JsonSerializer.DeserializeAsync<List<AppVer>>(Assets.Open("version.json"));
+                if (remoteVers[0].version == localVers[0].version)
+                {
+                    Toast.MakeText(this, "已经是最新版", ToastLength.Long).Show();
+                    return;
+                }
+                var builder = new Android.Support.V7.App.AlertDialog.Builder(this);
+                var msg = "更新版本的HubFucker已发布，你想现在安装它吗？\n";
+                for (int i = 0; i < remoteVers.Count - localVers.Count; i++)
+                {
+                    var item = remoteVers[i];
+                    msg += $"V{item.version}\n";
+                    foreach (var update in item.updates)
+                    {
+                        msg += $" -{update}\n";
+                    }
+                }
+                builder
+                    .SetMessage(msg)
+                    .SetPositiveButton("是", (o, args) =>
+                    {
+                        Toast.MakeText(this, "下载已在后台开始，会在完成时自动尝试安装", ToastLength.Long).Show();
+                        InstallAsync(remoteVers[0].apkUrl);
+                    })
+                    .SetNegativeButton("否", (o, args) =>
+                    {
+                    })
+                    .SetNeutralButton("最近不再提示", (o, args) =>
+                    {
+                        uncheckTime = DateTime.Now;
+                        File.WriteAllTextAsync(uncheckSavePath, uncheckTime.ToString());
+                    })
+                    .Create()
+                    .Show();
             }
-            builder
-                .SetMessage(msg)
-                .SetPositiveButton("是", (o,args)=> 
-                {
-                    Toast.MakeText(this, "下载已在后台开始，会在完成时自动尝试安装", ToastLength.Long).Show();
-                    InstallAsync(remoteVers[0].apkurl); 
-                })
-                .SetNegativeButton("否", (o, args) =>
-                {
-                })
-                .SetNeutralButton("最近不再提示", (o, args) =>
-                {
-                    uncheckTime = DateTime.Now;
-                    File.WriteAllTextAsync(uncheckSavePath, uncheckTime.ToString());
-                })
-                .Create()
-                .Show();
+            catch (Exception)
+            {
+
+                Toast.MakeText(this, "由于网络问题，检查更新失败。推荐使用华科校园网", ToastLength.Long).Show();
+            }
         }
         async ValueTask InstallAsync(string src)
         {
-            RequestPermissions(new[] { Manifest.Permission.InstallPackages, Manifest.Permission.ReadExternalStorage,
-                Manifest.Permission.WriteExternalStorage }, 1);
             try
             {
                 var s = await client.GetStreamAsync(src);
@@ -158,9 +172,9 @@ namespace HubFucker
                 StartActivity(install);
                 return;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                throw e;
+                Toast.MakeText(this, "因为网络问题，更新下载失败。推荐使用华科校园网", ToastLength.Long).Show();
             }
         }
         async ValueTask LoadListAsync()
