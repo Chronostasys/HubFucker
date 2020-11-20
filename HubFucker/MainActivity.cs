@@ -27,6 +27,8 @@ using HubFucker.Resources.layout;
 using Android.Content;
 using Jint.Parser.Ast;
 using Android.Support.V7.View.Menu;
+using Android.Content.PM;
+using System.Net.Http;
 
 namespace HubFucker
 {
@@ -43,6 +45,9 @@ namespace HubFucker
         static string dataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Personal),
             "hustcourses2020.1.json");
+        string apkPath => Path.Combine(
+            GetExternalFilesDir(null).Path,
+            "e.apk");
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
@@ -72,6 +77,64 @@ namespace HubFucker
             progress = FindViewById<TextView>(Resource.Id.textView5);
             progressBar1 = FindViewById<ProgressBar>(Resource.Id.progressBar1);
             LoadAsync();
+            CheckUpdate();
+        }
+        async ValueTask CheckUpdate()
+        {
+            var builder = new Android.Support.V7.App.AlertDialog.Builder(this);
+            var vername = PackageManager.GetPackageInfo(PackageName, 0).VersionName;
+            builder
+                .SetMessage("更新版本的HubFucker已发布，你想现在安装它吗？")
+                .SetPositiveButton("是", (o,args)=> 
+                {
+                    Toast.MakeText(this, "下载已在后台开始，会在完成时自动尝试安装", ToastLength.Long).Show();
+                    InstallAsync(); 
+                })
+                .SetNegativeButton("否", (o, args) =>
+                {
+                })
+                .SetNeutralButton("最近不再提示", (o, args) =>
+                {
+                })
+                .Create()
+                .Show();
+        }
+        async ValueTask InstallAsync()
+        {
+            RequestPermissions(new[] { Manifest.Permission.InstallPackages, Manifest.Permission.ReadExternalStorage,
+                Manifest.Permission.WriteExternalStorage }, 1);
+            using (var client = new HttpClient())
+            {
+                try
+                {
+                    if (!File.Exists(apkPath))
+                    {
+                        var s = await client.GetStreamAsync(
+                            "https://github.com/Chronostasys/HubFucker/releases/download/V2.0.0/hubfucker.app.apk");
+                        var fs = File.Create(apkPath);
+                        await s.CopyToAsync(fs);
+                        await fs.FlushAsync();
+                        await fs.DisposeAsync();
+                        await s.DisposeAsync();
+                    }
+                    Intent install = new Intent(Intent.ActionView);
+                    install.AddFlags(ActivityFlags.ClearTask);
+                    
+                    install.AddFlags(ActivityFlags.GrantReadUriPermission);
+                    var f = new Java.IO.File(apkPath);
+                    var uri = FileProvider.GetUriForFile(this,
+                        PackageName + ".provider", f);
+                    install.SetDataAndType(uri, "application/vnd.android.package-archive");
+                    StartActivity(install);
+                    return;
+                }
+                catch (Exception e)
+                {
+                    throw e;
+                }
+                
+                
+            }
         }
         async ValueTask LoadListAsync()
         {
