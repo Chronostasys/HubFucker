@@ -1,5 +1,13 @@
 ﻿[
   {
+    "version": "2.2",
+    "apkUrl": "https://cdn.limfx.pro/hubfucker/hubfucker.app.apk",
+    "updates": [
+      "换下载源至cdn",
+      "去除更新检查失败的提示"
+    ]
+  },
+  {
     "version": "2.1",
     "apkUrl": "https://github.com/Chronostasys/HubFucker/releases/download/V2.1.0/hubfucker.app.apk",
     "updates": [
