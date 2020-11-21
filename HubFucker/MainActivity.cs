@@ -33,7 +33,7 @@ using HubFucker.Model;
 
 namespace HubFucker
 {
-    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", MainLauncher = true)]
+    [Activity(Label = "@string/app_name", Theme = "@style/AppTheme.NoActionBar", Icon ="@drawable/ic_launcher_logo", MainLauncher = true)]
     public class MainActivity : AppCompatActivity, NavigationView.IOnNavigationItemSelectedListener
     {
         IMenuItem current;
