@@ -1,5 +1,13 @@
 ﻿[
   {
+    "version": "2.3",
+    "apkUrl": "https://cdn.limfx.pro/hubfucker/hubfucker.app.apk",
+    "updates": [
+      "更换默认图标",
+      "移除对AngleSharp的依赖，以加速课表抓取"
+    ]
+  },
+  {
     "version": "2.2",
     "apkUrl": "https://cdn.limfx.pro/hubfucker/hubfucker.app.apk",
     "updates": [
