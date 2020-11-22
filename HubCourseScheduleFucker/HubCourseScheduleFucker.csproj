@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.14.0" />
-    <PackageReference Include="AngleSharp.Io" Version="0.14.0" />
-    <PackageReference Include="AngleSharp.Js" Version="0.14.0" />
+    <PackageReference Include="Jint" Version="2.11.58" />
     <PackageReference Include="System.Text.Json" Version="5.0.0" />
   </ItemGroup>
 
