@@ -52,7 +52,7 @@ namespace HubFucker
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
-        public static int day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
+        public static int day = (DateTime.Now - new DateTime(2020, 8, 31)).Days;
         static event EventHandler<int> itemChanged;
         string[] days = new[] { "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         NavigationView navigationView;

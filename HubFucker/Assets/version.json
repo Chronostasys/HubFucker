@@ -1,5 +1,13 @@
 ﻿[
   {
+    "version": "2.4",
+    "apkUrl": "https://cdn.limfx.pro/hubfucker/hubfucker.app.apk",
+    "updates": [
+      "修复2021年之后无法显示课表的严重bug",
+      "新年快快乐！"
+    ]
+  },
+  {
     "version": "2.3",
     "apkUrl": "https://cdn.limfx.pro/hubfucker/hubfucker.app.apk",
     "updates": [
