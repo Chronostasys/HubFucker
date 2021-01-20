@@ -98,15 +98,26 @@ namespace HubCourseScheduleFucker
         public async ValueTask<List<Lecture>> GetDailyLectureAsync(int week, DayOfWeek dayOfWeek)
         {
             //实际上hub只使用日期来获取星期几，所以time没必要是真实日期
-            DateTime time = DateTime.Now;
+            DateTime time = DateTime.Parse("2021-3-1");
             var less = dayOfWeek + 7 - time.DayOfWeek;
             time = time.AddDays(less);
             var timeSlug = time.ToString("yyyy-MM-dd");
             var req = $"http://hub.m.hust.edu.cn/kcb/todate/JsonCourse.action?sj={timeSlug}&zc={week}";
 
+            //application/x-www-form-urlencoded 需要用stringcontent设置
+            //维护hub的傻逼们把2021第一个学期叫做2020 2
+            var content = new StringContent("xqh=20202");
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+            var switchTermMessage = new HttpRequestMessage(System.Net.Http.HttpMethod.Post, "http://hub.m.hust.edu.cn/kcb/todate/XqJsonCourse.action");
+            switchTermMessage.Content = content;
+            await client.SendAsync(switchTermMessage);
+
+
             var message = new HttpRequestMessage(System.Net.Http.HttpMethod.Get, req);
             var result = await client.SendAsync(message);
-            return await JsonSerializer.DeserializeAsync<List<Lecture>>(await result.Content.ReadAsStreamAsync());
+            var s = await result.Content.ReadAsStreamAsync();
+            return await JsonSerializer.DeserializeAsync<List<Lecture>>(s);
         }
     }
 }

@@ -45,14 +45,14 @@ namespace HubFucker
         public static List<DailyLectures> lectures = new List<DailyLectures>();
         static string dataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.Personal),
-            "hustcourses2020.1.json");
+            "hustcourses2021.1.json");
         string apkPath => Path.Combine(
             GetExternalFilesDir(null).Path,
             "hubfucker.apk");
         RecyclerView mRecyclerView;
         RecyclerView.LayoutManager mLayoutManager;
         LectureListAdapter mAdapter;
-        public static int day = (DateTime.Now - new DateTime(2020, 8, 31)).Days;
+        public static int day = (DateTime.Now < new DateTime(2021, 3, 1) ? 0 : (DateTime.Now - new DateTime(2021, 3, 1)).Days);
         static event EventHandler<int> itemChanged;
         string[] days = new[] { "星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
         NavigationView navigationView;
@@ -398,7 +398,7 @@ namespace HubFucker
             {
                 current = navigationView.CheckedItem;
             }
-            if (day!= DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear)
+            if (day!= DateTime.Now.DayOfYear - new DateTime(2021, 3, 1).DayOfYear)
             {
                 //current?.SetChecked(false);
                 navigationView.CheckedItem?.SetChecked(false);
@@ -466,13 +466,16 @@ namespace HubFucker
             else if (id == Resource.Id.nav_share)
             {
                 current = item;
-                day = DateTime.Now.DayOfYear - new DateTime(2020, 8, 31).DayOfYear;
+                var prevDay = day;
+                day = DateTime.Now.DayOfYear - new DateTime(2020, 3, 1).DayOfYear;
                 try
                 {
                     ShowDailyCourse();
                 }
                 catch (Exception)
                 {
+                    day = prevDay;
+                    Toast.MakeText(this, "超出范围", ToastLength.Long).Show();
                 }
                 drawer?.CloseDrawer(GravityCompat.Start);
                 return true;
